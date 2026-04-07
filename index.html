@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<title>Cambridge Primary Science – Forces & Magnets</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+/* ─────────────────── RESET & BASE ─────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+:root {
+  --bg:       #090c1a;
+  --surface:  #111527;
+  --card:     #181d35;
+  --card2:    #1e2440;
+  --border:   rgba(255,255,255,0.08);
+  --cyan:     #00e5ff;
+  --orange:   #ff7043;
+  --purple:   #a855f7;
+  --yellow:   #fbbf24;
+  --green:    #22c55e;
+  --red:      #ef4444;
+  --text:     #e8eaf6;
+  --muted:    #8892b0;
+  --banner-h: 52px;
+  --nav-h:    60px;
+  --r:        18px;
+  --font-h:   'Fredoka One', cursive;
+  --font-b:   'Nunito', sans-serif;
+}
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-b);
+  touch-action: none;
+}
+
+/* ─────────────────── STAR BACKGROUND ─────────────────── */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,229,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(168,85,247,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(255,112,67,0.04) 0%, transparent 60%);
+  pointer-events:none;
+}
+
+/* ─────────────────── LOCATION BANNER ─────────────────── */
+#banner {
+  position: fixed; top:0; left:0; right:0;
+  height: var(--banner-h);
+  background: linear-gradient(90deg, #0e1432 0%, #141932 50%, #0e1432 100%);
+  border-bottom: 1px solid rgba(0,229,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+  gap: 0;
+}
+#banner .b-inner {
+  display:flex; align-items:center; gap:10px;
+  font-family: var(--font-b); font-size:clamp(11px,1.5vw,15px);
+  font-weight:700; letter-spacing:0.04em;
+}
+.b-sep { color: var(--cyan); opacity:0.5; margin: 0 4px; }
+.b-part { color: var(--muted); }
+.b-part.hi { color: var(--cyan); }
+.b-icon { font-size:1.2em; }
+
+/* ─────────────────── TIMER ─────────────────── */
+#timer {
+  position:fixed; top:8px; right:16px; z-index:200;
+  background: rgba(0,229,255,0.08);
+  border: 1px solid rgba(0,229,255,0.3);
+  border-radius:30px;
+  padding: 4px 14px;
+  font-family: var(--font-h); font-size:clamp(14px,2vw,20px);
+  color: var(--cyan);
+  letter-spacing:0.05em;
+  display:flex; align-items:center; gap:6px;
+  cursor:pointer;
+  transition: background 0.3s;
+}
+#timer:active { background: rgba(0,229,255,0.18); }
+#timer .t-icon { font-size:0.9em; }
+
+/* ─────────────────── SLIDES WRAPPER ─────────────────── */
+#slides-wrapper {
+  position:fixed;
+  top: var(--banner-h);
+  bottom: var(--nav-h);
+  left:0; right:0;
+  overflow:hidden;
+  z-index:1;
+}
+#slides-track {
+  display:flex;
+  height:100%;
+  transition: transform 0.42s cubic-bezier(0.77,0,0.175,1);
+  will-change: transform;
+}
+.slide {
+  flex: 0 0 100%;
+  width:100%;
+  height:100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 24px 24px;
+  display:flex; flex-direction:column; gap:16px;
+  position:relative;
+  -webkit-overflow-scrolling: touch;
+}
+.slide::-webkit-scrollbar { display:none; }
+
+/* ─────────────────── SLIDE HEADERS ─────────────────── */
+.slide-header {
+  display:flex; align-items:center; gap:12px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.slide-num {
+  width:38px; height:38px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-h); font-size:18px;
+  flex-shrink:0;
+}
+.slide-title {
+  font-family: var(--font-h);
+  font-size: clamp(22px,4vw,36px);
+  line-height:1.1;
+}
+.slide-sub {
+  font-size:clamp(12px,1.6vw,15px);
+  color: var(--muted); margin-top:2px;
+  font-weight:600;
+}
+
+/* ─────────────────── CONCEPT BOX ─────────────────── */
+.concept-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding:16px 20px;
+  font-size:clamp(13px,1.8vw,17px);
+  font-weight:700;
+  line-height:1.5;
+  position:relative; overflow:hidden;
+}
+.concept-box::before {
+  content:'';
+  position:absolute; left:0; top:0; bottom:0;
+  width:4px; border-radius:4px 0 0 4px;
+}
+.concept-box .cb-label {
+  font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--muted); font-weight:800; margin-bottom:6px;
+}
+
+/* ─────────────────── INTERACTIVE GRID ─────────────────── */
+.tap-grid {
+  display:grid;
+  gap:12px;
+}
+.tap-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.tap-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.tap-grid.cols-auto { grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); }
+
+/* ─────────────────── TAP CARD ─────────────────── */
+.tap-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 14px;
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:8px;
+  cursor:pointer;
+  text-align:center;
+  position:relative; overflow:hidden;
+  transition: transform 0.15s, border-color 0.3s, background 0.3s;
+  min-height: 110px;
+}
+.tap-card:active { transform: scale(0.96); }
+.tap-card .tc-emoji { font-size: clamp(28px,4vw,40px); line-height:1; }
+.tap-card .tc-q { font-size:clamp(12px,1.6vw,15px); font-weight:800; line-height:1.3; }
+.tap-card .tc-hint {
+  font-size:10px; color:var(--muted); font-weight:700;
+  letter-spacing:0.05em; text-transform:uppercase;
+  display:flex; align-items:center; gap:4px;
+}
+.tap-card .tc-answer {
+  display:none;
+  font-size:clamp(11px,1.5vw,14px); font-weight:800;
+  border-radius:8px; padding:6px 12px;
+  margin-top:4px; line-height:1.3;
+}
+.tap-card.revealed .tc-hint { display:none; }
+.tap-card.revealed .tc-answer { display:block; }
+.tap-card.revealed {
+  border-color: var(--green);
+  background: rgba(34,197,94,0.07);
+}
+.tap-card.revealed-orange { border-color: var(--orange) !important; background: rgba(255,112,67,0.07) !important; }
+.tap-card.revealed-purple { border-color: var(--purple) !important; background: rgba(168,85,247,0.07) !important; }
+.tap-card.revealed-cyan   { border-color: var(--cyan)   !important; background: rgba(0,229,255,0.07)   !important; }
+.tap-card.revealed-yellow { border-color: var(--yellow) !important; background: rgba(251,191,36,0.07)  !important; }
+/* ── Fix: show answer & hide hint for ALL colour variants ── */
+.tap-card.revealed-orange .tc-hint,
+.tap-card.revealed-purple .tc-hint,
+.tap-card.revealed-cyan .tc-hint,
+.tap-card.revealed-yellow .tc-hint { display:none; }
+.tap-card.revealed-orange .tc-answer,
+.tap-card.revealed-purple .tc-answer,
+.tap-card.revealed-cyan .tc-answer,
+.tap-card.revealed-yellow .tc-answer { display:block; }
+
+/* ─────────────────── RIPPLE ─────────────────── */
+.ripple {
+  position:absolute; border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  transform:scale(0);
+  animation: ripple-anim 0.5s linear;
+  pointer-events:none;
+}
+@keyframes ripple-anim {
+  to { transform:scale(4); opacity:0; }
+}
+
+/* ─────────────────── SLIDE 1 ─────────────────── */
+#slide-1 .slide-num { background: rgba(0,229,255,0.15); color:var(--cyan); }
+#slide-1 .concept-box::before { background:var(--cyan); }
+#slide-1 .concept-box { border-color:rgba(0,229,255,0.2); }
+
+.force-fact-row {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.force-fact {
+  background:var(--card2); border:1px solid var(--border);
+  border-radius:14px; padding:14px 16px;
+  display:flex; align-items:center; gap:10px;
+}
+.force-fact .ff-icon { font-size:26px; flex-shrink:0; }
+.force-fact .ff-label { font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
+.force-fact .ff-val { font-family:var(--font-h); font-size:clamp(16px,2.5vw,22px); color:var(--cyan); }
+
+/* ─────────────────── SLIDE 2 ─────────────────── */
+#slide-2 .slide-num { background:rgba(251,191,36,0.15); color:var(--yellow); }
+#slide-2 .concept-box::before { background:var(--yellow); }
+#slide-2 .concept-box { border-color:rgba(251,191,36,0.2); }
+
+.drop-test-box {
+  background: var(--card);
+  border: 2px solid rgba(251,191,36,0.25);
+  border-radius:var(--r);
+  padding:20px;
+  cursor:pointer;
+  transition: border-color 0.3s, background 0.3s;
+  position:relative; overflow:hidden;
+}
+.drop-test-box .dt-title {
+  font-family:var(--font-h); font-size:clamp(18px,2.5vw,26px);
+  color:var(--yellow); margin-bottom:10px;
+  display:flex; align-items:center; gap:8px;
+}
+.drop-test-visual {
+  display:flex; align-items:flex-end; justify-content:center; gap:40px;
+  height:90px; margin:10px 0;
+  position:relative;
+}
+.drop-obj {
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  font-size:12px; font-weight:700; color:var(--muted);
+}
+.drop-obj .do-emoji { font-size:36px; line-height:1; }
+.drop-obj.falling .do-emoji {
+  animation: fall-obj 0.8s ease-in forwards;
+}
+@keyframes fall-obj {
+  from { transform:translateY(-50px); }
+  to   { transform:translateY(0); }
+}
+.drop-line {
+  position:absolute; bottom:0; left:10%; right:10%;
+  height:2px; background:rgba(251,191,36,0.3); border-radius:2px;
+}
+.dt-answer {
+  display:none; margin-top:10px;
+  background:rgba(251,191,36,0.1); border-radius:10px;
+  padding:12px 16px; font-size:clamp(12px,1.6vw,15px); font-weight:700;
+  line-height:1.5; color:var(--yellow);
+}
+.drop-test-box.revealed { border-color:var(--yellow); background:rgba(251,191,36,0.05); }
+.drop-test-box.revealed .dt-answer { display:block; }
+.drop-test-box .dt-hint { font-size:11px; color:var(--muted); text-align:center; margin-top:6px; font-weight:700; }
+.drop-test-box.revealed .dt-hint { display:none; }
+
+.gravity-qs { display:grid; gap:10px; }
+
+/* ─────────────────── SLIDE 3 ─────────────────── */
+#slide-3 .slide-num { background:rgba(255,112,67,0.15); color:var(--orange); }
+#slide-3 .concept-box::before { background:var(--orange); }
+#slide-3 .concept-box { border-color:rgba(255,112,67,0.2); }
+
+.waterslide-box {
+  background: linear-gradient(135deg, #0d1f3c 0%, #1a2a50 100%);
+  border: 2px solid rgba(0,229,255,0.25);
+  border-radius:var(--r);
+  padding:20px; cursor:pointer;
+  position:relative; overflow:hidden;
+  transition: border-color 0.3s;
+}
+.waterslide-box .ws-title {
+  font-family:var(--font-h); font-size:clamp(16px,2.2vw,24px);
+  color:var(--cyan); margin-bottom:8px;
+  display:flex; align-items:center; gap:8px;
+}
+.waterslide-box .ws-q {
+  font-size:clamp(14px,1.8vw,18px); font-weight:800;
+  color:var(--text); margin-bottom:10px;
+}
+.ws-answer {
+  display:none; font-size:clamp(12px,1.6vw,15px); font-weight:700;
+  line-height:1.6;
+}
+.waterslide-box.revealed .ws-answer { display:block; }
+.waterslide-box.revealed { border-color:var(--orange); }
+.ws-hint { font-size:11px; color:var(--muted); font-weight:700; text-align:center; margin-top:6px; }
+.waterslide-box.revealed .ws-hint { display:none; }
+
+.friction-scale {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r); padding:16px 20px;
+}
+.friction-scale .fs-title {
+  font-size:12px; font-weight:800; text-transform:uppercase;
+  letter-spacing:.08em; color:var(--muted); margin-bottom:10px;
+}
+.fs-bar-wrap {
+  display:flex; align-items:center; gap:10px;
+}
+.fs-label { font-size:11px; font-weight:800; flex-shrink:0; width:80px; }
+.fs-bar-bg {
+  flex:1; height:22px; border-radius:11px;
+  background:rgba(255,255,255,0.06); overflow:hidden;
+  position:relative;
+}
+.fs-bar-fill {
+  height:100%; border-radius:11px;
+  transition: width 1.2s cubic-bezier(.22,1,.36,1);
+  width:0;
+}
+.fs-bar-fill.animated { /* width set inline */ }
+.fs-item { margin-bottom:8px; }
+
+/* ─────────────────── SLIDE 4 ─────────────────── */
+#slide-4 .slide-num { background:rgba(168,85,247,0.15); color:var(--purple); }
+#slide-4 .concept-box::before { background:var(--purple); }
+#slide-4 .concept-box { border-color:rgba(168,85,247,0.2); }
+
+.magnet-arena {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r); padding:20px;
+  display:flex; flex-direction:column; align-items:center; gap:16px;
+}
+.magnet-arena .ma-title {
+  font-size:12px; font-weight:800; text-transform:uppercase;
+  letter-spacing:.08em; color:var(--muted);
+}
+.magnet-pairs {
+  display:grid; grid-template-columns:1fr 1fr; gap:14px; width:100%;
+}
+.magnet-pair {
+  background:var(--card2); border:2px solid var(--border);
+  border-radius:14px; padding:16px;
+  cursor:pointer; text-align:center;
+  position:relative; overflow:hidden;
+  transition: border-color 0.3s, background 0.3s;
+}
+.magnet-pair .mp-poles {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  margin-bottom:10px;
+}
+.mp-pole {
+  width:52px; height:34px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-h); font-size:16px; font-weight:700;
+  transition: transform 0.4s;
+}
+.mp-pole.N { background:linear-gradient(135deg,#1e40af,#3b82f6); color:#fff; }
+.mp-pole.S { background:linear-gradient(135deg,#991b1b,#ef4444); color:#fff; }
+.mp-vs { font-size:14px; color:var(--muted); font-weight:700; }
+.mp-badge {
+  display:none; font-family:var(--font-h);
+  font-size:clamp(14px,2vw,20px); padding:6px 16px;
+  border-radius:20px; margin-top:4px;
+}
+.magnet-pair.attract { border-color:var(--green); background:rgba(34,197,94,0.07); }
+.magnet-pair.attract .mp-badge { display:inline-block; background:var(--green); color:#fff; }
+.magnet-pair.attract .mp-pole { transform:scale(1.08); }
+.magnet-pair.repel { border-color:var(--red); background:rgba(239,68,68,0.07); }
+.magnet-pair.repel .mp-badge { display:inline-block; background:var(--red); color:#fff; }
+.magnet-pair.repel .mp-pole { transform:translateX(-4px); }
+.magnet-pair.repel .mp-pole:last-child { transform:translateX(4px); }
+.mp-hint { font-size:10px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+.magnet-pair.attract .mp-hint,
+.magnet-pair.repel .mp-hint { display:none; }
+
+.pole-vocab { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.pole-card {
+  border-radius:12px; padding:12px 14px;
+  font-size:clamp(11px,1.5vw,14px); font-weight:700; line-height:1.4;
+}
+.pole-card.n-card { background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3); }
+.pole-card.s-card { background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); }
+.pole-card .pc-label { font-family:var(--font-h); font-size:18px; margin-bottom:4px; }
+
+/* ─────────────────── SLIDE 5 ─────────────────── */
+#slide-5 .slide-num { background:rgba(34,197,94,0.15); color:var(--green); }
+#slide-5 .concept-box::before { background:var(--green); }
+#slide-5 .concept-box { border-color:rgba(34,197,94,0.2); }
+
+.materials-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:14px;
+}
+.material-card {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:var(--r); padding:18px 12px;
+  cursor:pointer; text-align:center;
+  position:relative; overflow:hidden;
+  min-height:140px;
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:8px;
+  transition: transform 0.5s, border-color 0.4s, background 0.4s;
+  transform-style: preserve-3d;
+}
+.material-card:active { transform: scale(0.93); }
+.mc-front, .mc-back {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:6px;
+  position:absolute; inset:0; padding:16px;
+  backface-visibility:hidden;
+  transition: opacity 0.3s;
+}
+.mc-back { opacity:0; }
+.mc-emoji { font-size:clamp(30px,5vw,44px); }
+.mc-name { font-size:clamp(12px,1.6vw,15px); font-weight:800; line-height:1.2; }
+.mc-hint { font-size:10px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+.mc-result {
+  font-family:var(--font-h); font-size:clamp(16px,2.5vw,24px);
+  margin-bottom:4px;
+}
+.mc-desc { font-size:clamp(10px,1.3vw,12px); font-weight:700; line-height:1.4; }
+.material-card.flipped { background:rgba(34,197,94,0.08); border-color:var(--green); }
+.material-card.flipped.non-mag { background:rgba(239,68,68,0.08); border-color:var(--red); }
+.material-card.flipped .mc-front { opacity:0; pointer-events:none; }
+.material-card.flipped .mc-back { opacity:1; }
+.mc-back .mc-result.mag { color:var(--green); }
+.mc-back .mc-result.non { color:var(--red); }
+
+/* ─────────────────── SLIDE 6 ─────────────────── */
+#slide-6 .slide-num { background:rgba(255,112,67,0.15); color:var(--orange); }
+
+.quiz-grid {
+  display:grid; gap:12px;
+  grid-template-columns: 1fr 1fr;
+}
+.quiz-card {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:var(--r); padding:18px 16px;
+  cursor:pointer; position:relative; overflow:hidden;
+  transition: border-color 0.35s, background 0.35s, transform 0.15s;
+  min-height:120px; display:flex; flex-direction:column;
+  justify-content:space-between;
+}
+.quiz-card:active { transform:scale(0.97); }
+.qc-num {
+  font-family:var(--font-h); font-size:12px;
+  color:var(--muted); margin-bottom:6px;
+}
+.qc-q {
+  font-size:clamp(13px,1.7vw,16px); font-weight:800;
+  line-height:1.4; flex:1;
+}
+.qc-tap {
+  font-size:10px; color:var(--muted); font-weight:700;
+  text-transform:uppercase; letter-spacing:.06em;
+  margin-top:8px;
+  display:flex; align-items:center; gap:4px;
+}
+.qc-answer {
+  display:none; font-size:clamp(11px,1.5vw,14px);
+  font-weight:700; line-height:1.5;
+  background:rgba(34,197,94,0.12);
+  border-radius:8px; padding:8px 12px; margin-top:8px;
+  color:var(--green);
+}
+.quiz-card.answered { border-color:var(--green); background:rgba(34,197,94,0.06); }
+.quiz-card.answered .qc-tap { display:none; }
+.quiz-card.answered .qc-answer { display:block; }
+
+/* ─────────────────── BOTTOM NAV DOTS ─────────────────── */
+#nav-bar {
+  position:fixed; bottom:0; left:0; right:0;
+  height:var(--nav-h);
+  background: rgba(9,12,26,0.95);
+  border-top:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  gap:14px; z-index:100;
+  backdrop-filter:blur(12px);
+}
+.nav-dot {
+  width:10px; height:10px; border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  cursor:pointer;
+  transition: background 0.3s, transform 0.3s, width 0.3s;
+}
+.nav-dot.active {
+  width:28px; border-radius:5px;
+  background:var(--cyan);
+  transform:none;
+}
+.nav-arrows {
+  position:fixed; bottom:12px; z-index:101;
+  display:flex; gap:8px;
+}
+#nav-prev { left:16px; }
+#nav-next { right:16px; }
+.nav-btn {
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--border);
+  border-radius:30px; padding:8px 18px;
+  font-family:var(--font-h); font-size:16px;
+  color:var(--muted); cursor:pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.nav-btn:active { background:rgba(0,229,255,0.12); color:var(--cyan); }
+
+/* ─────────────────── SLIDE IN ANIMATION ─────────────────── */
+.slide-content-animate > * {
+  opacity:0; transform:translateY(18px);
+  animation: slide-in 0.45s forwards;
+}
+.slide-content-animate > *:nth-child(1) { animation-delay:0.05s; }
+.slide-content-animate > *:nth-child(2) { animation-delay:0.12s; }
+.slide-content-animate > *:nth-child(3) { animation-delay:0.19s; }
+.slide-content-animate > *:nth-child(4) { animation-delay:0.26s; }
+.slide-content-animate > *:nth-child(5) { animation-delay:0.33s; }
+@keyframes slide-in {
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* Pulse hint animation */
+@keyframes pulse-hint {
+  0%,100% { opacity:1; }
+  50% { opacity:0.4; }
+}
+.pulse { animation: pulse-hint 2s ease-in-out infinite; }
+
+/* ─────────────────── RESPONSIVE ─────────────────── */
+@media (max-width:600px) {
+  .tap-grid.cols-3 { grid-template-columns:1fr 1fr; }
+  .quiz-grid { grid-template-columns:1fr; }
+  .magnet-pairs { grid-template-columns:1fr; }
+  .force-fact-row { grid-template-columns:1fr; }
+}
+
+/* ─────────────────── RESET BUTTON ─────────────────── */
+.reset-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,0.05); border:1px solid var(--border);
+  border-radius:20px; padding:7px 16px; cursor:pointer;
+  font-family:var(--font-b); font-size:12px; font-weight:800;
+  color:var(--muted); align-self:flex-end;
+  transition: background 0.2s; letter-spacing:.04em;
+}
+.reset-btn:active { background:rgba(255,255,255,0.1); }
+</style>
+</head>
+<body>
+
+<!-- ── BANNER ── -->
+<div id="banner">
+  <div class="b-inner">
+    <span class="b-icon">🔬</span>
+    <span class="b-part hi">Cambridge Primary Science</span>
+    <span class="b-sep">•</span>
+    <span class="b-part">Unit 5: Forces and Magnets</span>
+    <span class="b-sep">•</span>
+    <span class="b-part">Pages 125–150</span>
+  </div>
+</div>
+
+<!-- ── TIMER ── -->
+<div id="timer" onclick="toggleTimer()">
+  <span class="t-icon">⏱</span>
+  <span id="timer-display">05:00</span>
+</div>
+
+<!-- ── SLIDES ── -->
+<div id="slides-wrapper">
+<div id="slides-track">
+
+  <!-- ══════════════ SLIDE 1: FORCES ══════════════ -->
+  <div class="slide" id="slide-1">
+  <div class="slide-content-animate">
+
+    <div class="slide-header">
+      <div class="slide-num">1</div>
+      <div>
+        <div class="slide-title" style="color:var(--cyan)">⚡ Forces</div>
+        <div class="slide-sub">What can forces do to objects?</div>
+      </div>
+    </div>
+
+    <div class="concept-box" style="border-color:rgba(0,229,255,0.25)">
+      <div class="cb-label">🎯 Big Idea</div>
+      Forces can make objects <strong style="color:var(--cyan)">speed up</strong>, <strong style="color:var(--orange)">slow down</strong>, <strong style="color:var(--purple)">change direction</strong>, or <strong style="color:var(--yellow)">change shape</strong>!
+    </div>
+
+    <div class="force-fact-row">
+      <div class="force-fact">
+        <div class="ff-icon">⚖️</div>
+        <div>
+          <div class="ff-label">Standard Unit</div>
+          <div class="ff-val">Newton (N)</div>
+        </div>
+      </div>
+      <div class="force-fact">
+        <div class="ff-icon">📏</div>
+        <div>
+          <div class="ff-label">Measuring Tool</div>
+          <div class="ff-val">Forcemeter</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);">
+      👇 Tap each example — what does the force do?
+    </div>
+
+    <div class="tap-grid cols-2">
+
+      <div class="tap-card" onclick="reveal(this,'orange')" data-color="orange">
+        <div class="tc-emoji">⚽</div>
+        <div class="tc-q">Kicking a Football</div>
+        <div class="tc-hint pulse">👆 Tap to reveal</div>
+        <div class="tc-answer" style="background:rgba(255,112,67,0.15);color:var(--orange)">
+          🚀 Speeds Up & Changes Direction — your foot pushes the ball away!
+        </div>
+      </div>
+
+      <div class="tap-card" onclick="reveal(this,'purple')" data-color="purple">
+        <div class="tc-emoji">🏺</div>
+        <div class="tc-q">Squishing Clay</div>
+        <div class="tc-hint pulse">👆 Tap to reveal</div>
+        <div class="tc-answer" style="background:rgba(168,85,247,0.15);color:var(--purple)">
+          🫶 Changes Shape — your hands push the clay and flatten it!
+        </div>
+      </div>
+
+      <div class="tap-card" onclick="reveal(this,'green')" data-color="green">
+        <div class="tc-emoji">🛹</div>
+        <div class="tc-q">Pushing a Skateboard</div>
+        <div class="tc-hint pulse">👆 Tap to reveal</div>
+        <div class="tc-answer" style="background:rgba(34,197,94,0.15);color:var(--green)">
+          🚀 Speeds Up — the push gives the skateboard more speed!
+        </div>
+      </div>
+
+      <div class="tap-card" onclick="reveal(this,'cyan')" data-color="cyan">
+        <div class="tc-emoji">🛑</div>
+        <div class="tc-q">Brakes on a Bike</div>
+        <div class="tc-hint pulse">👆 Tap to reveal</div>
+        <div class="tc-answer" style="background:rgba(0,229,255,0.12);color:var(--cyan)">
+          🐢 Slows Down — the brake pads push against the wheel!
+        </div>
+      </div>
+
+      <div class="tap-card" onclick="reveal(this,'yellow')" data-color="yellow">
+        <div class="tc-emoji">🏹</div>
+        <div class="tc-q">Pulling a Bowstring</div>
+        <div class="tc-hint pulse">👆 Tap to reveal</div>
+        <div class="tc-answer" style="background:rgba(251,191,36,0.12);color:var(--yellow)">
+          🔀 Changes Shape — the string stretches and stores energy!
+        </div>
+      </div>
+
+      <div class="tap-card" onclick="reveal(this,'orange')" data-color="orange">
+        <div class="tc-emoji">🪃</div>
+        <div class="tc-q">Throwing a Boomerang</div>
+        <div class="tc-hint pulse">👆 Tap to reveal</div>
+        <div class="tc-answer" style="background:rgba(255,112,67,0.15);color:var(--orange)">
+          🔀 Changes Direction — its curved shape makes air push it around!
+        </div>
+      </div>
+
+    </div>
+
+    <button class="reset-btn" onclick="resetSlide('slide-1')">↺ Reset Slide</button>
+  </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 2: GRAVITY ══════════════ -->
+  <div class="slide" id="slide-2">
+  <div class="slide-content-animate">
+
+    <div class="slide-header">
+      <div class="slide-num" style="background:rgba(251,191,36,0.15);color:var(--yellow)">2</div>
+      <div>
+        <div class="slide-title" style="color:var(--yellow)">🌍 Gravity</div>
+        <div class="slide-sub">The invisible force that pulls everything down</div>
+      </div>
+    </div>
+
+    <div class="concept-box" style="border-color:rgba(251,191,36,0.25)">
+      <div class="cb-label">🎯 Big Idea</div>
+      The direction of <strong style="color:var(--yellow)">"down"</strong> is always toward the <strong style="color:var(--yellow)">center of the Earth</strong>. Gravity pulls everything toward the Earth's core!
+    </div>
+
+    <!-- Drop Test Interactive -->
+    <div class="drop-test-box" id="dropTest" onclick="doDropTest()">
+      <div class="dt-title">🔬 The Drop Test</div>
+      <div class="drop-test-visual" id="dropVisual">
+        <div class="drop-obj" id="bowlingBall">
+          <div class="do-emoji">🎳</div>
+          <div>Bowling Ball</div>
+          <div style="font-size:10px;color:var(--muted)">Heavy</div>
+        </div>
+        <div style="font-size:22px;color:var(--muted);align-self:center">vs</div>
+        <div class="drop-obj" id="feather">
+          <div class="do-emoji">🪶</div>
+          <div>Feather</div>
+          <div style="font-size:10px;color:var(--muted)">Light</div>
+        </div>
+        <div class="drop-line"></div>
+      </div>
+      <div class="dt-answer" id="dtAnswer">
+        ✅ <strong>They land at the SAME TIME!</strong><br/>
+        In a vacuum (no air), gravity pulls all objects equally, no matter how heavy or light. A feather and a bowling ball dropped from the same height hit the ground at exactly the same moment!
+      </div>
+      <div class="dt-hint pulse">👆 Tap to drop the objects and see what happens!</div>
+    </div>
+
+    <!-- Q&A cards -->
+    <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);">
+      👇 Gravity Questions — tap to reveal answers
+    </div>
+
+    <div class="gravity-qs">
+      <div class="tap-card" onclick="reveal(this,'yellow')" style="flex-direction:row;min-height:80px;text-align:left;gap:14px;padding:14px 18px">
+        <div class="tc-emoji">🌕</div>
+        <div style="flex:1">
+          <div class="tc-q">Why do astronauts float on the Moon?</div>
+          <div class="tc-hint pulse" style="margin-top:4px">👆 Tap to reveal</div>
+          <div class="tc-answer" style="background:rgba(251,191,36,0.1);color:var(--yellow);margin-top:6px">
+            The Moon is smaller than Earth, so its gravity is much weaker — only 1/6th of Earth's gravity!
+          </div>
+        </div>
+      </div>
+
+      <div class="tap-card" onclick="reveal(this,'yellow')" style="flex-direction:row;min-height:80px;text-align:left;gap:14px;padding:14px 18px">
+        <div class="tc-emoji">🍎</div>
+        <div style="flex:1">
+          <div class="tc-q">Why does a dropped apple always fall DOWN?</div>
+          <div class="tc-hint pulse" style="margin-top:4px">👆 Tap to reveal</div>
+          <div class="tc-answer" style="background:rgba(251,191,36,0.1);color:var(--yellow);margin-top:6px">
+            Earth's gravity pulls every object toward its center — "down" always means toward the ground!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetSlide('slide-2')">↺ Reset Slide</button>
+  </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 3: FRICTION ══════════════ -->
+  <div class="slide" id="slide-3">
+  <div class="slide-content-animate">
+
+    <div class="slide-header">
+      <div class="slide-num" style="background:rgba(255,112,67,0.15);color:var(--orange)">3</div>
+      <div>
+        <div class="slide-title" style="color:var(--orange)">🔥 Friction</div>
+        <div class="slide-sub">The force that slows things down</div>
+      </div>
+    </div>
+
+    <div class="concept-box" style="border-color:rgba(255,112,67,0.25)">
+      <div class="cb-label">🎯 Big Idea</div>
+      Friction happens when <strong style="color:var(--orange)">two surfaces rub together</strong>. It <strong style="color:var(--orange)">slows moving objects down</strong>. The rougher the surfaces, the more friction!
+    </div>
+
+    <!-- Water Slide Question -->
+    <div class="waterslide-box" id="waterSlide" onclick="revealWaterSlide()">
+      <div class="ws-title">🌊 Mystery Question</div>
+      <div class="ws-q">❓ Why do you move SO fast on a water slide?</div>
+      <div class="ws-answer" id="wsAnswer">
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <span style="font-size:24px">💧</span>
+          <div>
+            <div style="color:var(--cyan);font-size:clamp(14px,2vw,18px);margin-bottom:6px">Water REDUCES Friction!</div>
+            Water acts as a <strong>lubricant</strong> between you and the slide surface. Less friction = less resistance = you zoom down super fast! 🚀<br/><br/>
+            <span style="color:var(--muted)">On a dry slide, friction between your skin and the slide would slow you down.</span>
+          </div>
+        </div>
+      </div>
+      <div class="ws-hint pulse">👆 Tap to discover the answer!</div>
+    </div>
+
+    <!-- Friction Scale -->
+    <div class="friction-scale" id="frictionScale">
+      <div class="fs-title">📊 Friction Level Comparison — tap to animate</div>
+      <div style="display:flex;flex-direction:column;gap:10px" onclick="animateFriction()">
+        <div class="fs-item">
+          <div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:4px">🧊 Ice Rink</div>
+          <div class="fs-bar-wrap">
+            <div class="fs-bar-bg"><div class="fs-bar-fill" data-width="8%" style="background:linear-gradient(90deg,var(--cyan),#0099bb)"></div></div>
+            <span style="font-size:11px;font-weight:800;color:var(--cyan);width:40px;text-align:right">LOW</span>
+          </div>
+        </div>
+        <div class="fs-item">
+          <div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:4px">🌊 Water Slide</div>
+          <div class="fs-bar-wrap">
+            <div class="fs-bar-bg"><div class="fs-bar-fill" data-width="12%" style="background:linear-gradient(90deg,#0099ff,#00ccff)"></div></div>
+            <span style="font-size:11px;font-weight:800;color:#00ccff;width:40px;text-align:right">LOW</span>
+          </div>
+        </div>
+        <div class="fs-item">
+          <div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:4px">🛣️ Smooth Road</div>
+          <div class="fs-bar-wrap">
+            <div class="fs-bar-bg"><div class="fs-bar-fill" data-width="45%" style="background:linear-gradient(90deg,var(--yellow),orange)"></div></div>
+            <span style="font-size:11px;font-weight:800;color:var(--yellow);width:40px;text-align:right">MED</span>
+          </div>
+        </div>
+        <div class="fs-item">
+          <div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:4px">🪨 Rough Rock</div>
+          <div class="fs-bar-wrap">
+            <div class="fs-bar-bg"><div class="fs-bar-fill" data-width="88%" style="background:linear-gradient(90deg,var(--orange),var(--red))"></div></div>
+            <span style="font-size:11px;font-weight:800;color:var(--orange);width:40px;text-align:right">HIGH</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetSlide('slide-3')">↺ Reset Slide</button>
+  </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 4: MAGNETS ══════════════ -->
+  <div class="slide" id="slide-4">
+  <div class="slide-content-animate">
+
+    <div class="slide-header">
+      <div class="slide-num" style="background:rgba(168,85,247,0.15);color:var(--purple)">4</div>
+      <div>
+        <div class="slide-title" style="color:var(--purple)">🧲 Magnets</div>
+        <div class="slide-sub">Attract, Repel, North & South Poles</div>
+      </div>
+    </div>
+
+    <div class="concept-box" style="border-color:rgba(168,85,247,0.25)">
+      <div class="cb-label">🎯 Big Idea</div>
+      Every magnet has a <strong style="color:#3b82f6">North Pole (N)</strong> and a <strong style="color:var(--red)">South Pole (S)</strong>.
+      Opposite poles <strong style="color:var(--green)">ATTRACT</strong> 🟢 and same poles <strong style="color:var(--red)">REPEL</strong> 🔴!
+    </div>
+
+    <!-- Magnet Pairs -->
+    <div class="magnet-arena">
+      <div class="ma-title">👇 Tap each pair to see what happens!</div>
+      <div class="magnet-pairs">
+
+        <div class="magnet-pair" onclick="magnetTap(this,'attract')">
+          <div class="mp-poles">
+            <div class="mp-pole N">N</div>
+            <div class="mp-vs">→←</div>
+            <div class="mp-pole S">S</div>
+          </div>
+          <div class="mp-hint pulse">North → South</div>
+          <div class="mp-badge">✅ ATTRACT</div>
+        </div>
+
+        <div class="magnet-pair" onclick="magnetTap(this,'repel')">
+          <div class="mp-poles">
+            <div class="mp-pole N">N</div>
+            <div class="mp-vs">→←</div>
+            <div class="mp-pole N">N</div>
+          </div>
+          <div class="mp-hint pulse">North → North</div>
+          <div class="mp-badge">❌ REPEL</div>
+        </div>
+
+        <div class="magnet-pair" onclick="magnetTap(this,'repel')">
+          <div class="mp-poles">
+            <div class="mp-pole S">S</div>
+            <div class="mp-vs">→←</div>
+            <div class="mp-pole S">S</div>
+          </div>
+          <div class="mp-hint pulse">South → South</div>
+          <div class="mp-badge">❌ REPEL</div>
+        </div>
+
+        <div class="magnet-pair" onclick="magnetTap(this,'attract')">
+          <div class="mp-poles">
+            <div class="mp-pole S">S</div>
+            <div class="mp-vs">→←</div>
+            <div class="mp-pole N">N</div>
+          </div>
+          <div class="mp-hint pulse">South → North</div>
+          <div class="mp-badge">✅ ATTRACT</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Pole vocabulary -->
+    <div class="pole-vocab">
+      <div class="pole-card n-card">
+        <div class="pc-label">🔵 North Pole</div>
+        Points toward Earth's geographic North. Attracts South poles.
+      </div>
+      <div class="pole-card s-card">
+        <div class="pc-label">🔴 South Pole</div>
+        Points toward Earth's geographic South. Attracts North poles.
+      </div>
+    </div>
+
+    <div class="concept-box" style="border-color:rgba(168,85,247,0.2)">
+      <div class="cb-label">💡 Magnetism</div>
+      <strong style="color:var(--purple)">Magnetism</strong> is the invisible force created by magnets. It can work through some materials — like paper, plastic, and air — without even touching!
+    </div>
+
+    <button class="reset-btn" onclick="resetSlide('slide-4')">↺ Reset Slide</button>
+  </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 5: MAGNETIC MATERIALS ══════════════ -->
+  <div class="slide" id="slide-5">
+  <div class="slide-content-animate">
+
+    <div class="slide-header">
+      <div class="slide-num" style="background:rgba(34,197,94,0.15);color:var(--green)">5</div>
+      <div>
+        <div class="slide-title" style="color:var(--green)">🔍 Magnetic Materials</div>
+        <div class="slide-sub">What does a magnet attract?</div>
+      </div>
+    </div>
+
+    <div class="concept-box" style="border-color:rgba(34,197,94,0.25)">
+      <div class="cb-label">🎯 Big Idea</div>
+      Not everything is magnetic! Only objects containing <strong style="color:var(--green)">iron, steel, nickel, or cobalt</strong> are attracted to magnets.
+    </div>
+
+    <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">
+      👇 Tap each object — is it magnetic or not?
+    </div>
+
+    <div class="materials-grid">
+
+      <div class="material-card" onclick="flipCard(this)" data-magnetic="yes">
+        <div class="mc-front">
+          <div class="mc-emoji">📌</div>
+          <div class="mc-name">Iron Nail</div>
+          <div class="mc-hint pulse">👆 Tap to test!</div>
+        </div>
+        <div class="mc-back">
+          <div class="mc-emoji">🧲</div>
+          <div class="mc-result mag">MAGNETIC!</div>
+          <div class="mc-desc">Iron nails are strongly attracted to magnets — iron is a magnetic metal!</div>
+        </div>
+      </div>
+
+      <div class="material-card" onclick="flipCard(this)" data-magnetic="no">
+        <div class="mc-front">
+          <div class="mc-emoji">🥄</div>
+          <div class="mc-name">Plastic Spoon</div>
+          <div class="mc-hint pulse">👆 Tap to test!</div>
+        </div>
+        <div class="mc-back non-mag">
+          <div class="mc-emoji">❌</div>
+          <div class="mc-result non">NOT Magnetic</div>
+          <div class="mc-desc">Plastic has no iron or metal. Magnets have no effect on it!</div>
+        </div>
+      </div>
+
+      <div class="material-card" onclick="flipCard(this)" data-magnetic="no">
+        <div class="mc-front">
+          <div class="mc-emoji">🪙</div>
+          <div class="mc-name">Copper Coin</div>
+          <div class="mc-hint pulse">👆 Tap to test!</div>
+        </div>
+        <div class="mc-back non-mag">
+          <div class="mc-emoji">❌</div>
+          <div class="mc-result non">NOT Magnetic</div>
+          <div class="mc-desc">Copper is a metal but NOT magnetic — it doesn't contain iron!</div>
+        </div>
+      </div>
+
+      <div class="material-card" onclick="flipCard(this)" data-magnetic="yes">
+        <div class="mc-front">
+          <div class="mc-emoji">📎</div>
+          <div class="mc-name">Steel Paperclip</div>
+          <div class="mc-hint pulse">👆 Tap to test!</div>
+        </div>
+        <div class="mc-back">
+          <div class="mc-emoji">🧲</div>
+          <div class="mc-result mag">MAGNETIC!</div>
+          <div class="mc-desc">Steel is made from iron — so it IS attracted to magnets!</div>
+        </div>
+      </div>
+
+      <div class="material-card" onclick="flipCard(this)" data-magnetic="no">
+        <div class="mc-front">
+          <div class="mc-emoji">🪵</div>
+          <div class="mc-name">Wooden Block</div>
+          <div class="mc-hint pulse">👆 Tap to test!</div>
+        </div>
+        <div class="mc-back non-mag">
+          <div class="mc-emoji">❌</div>
+          <div class="mc-result non">NOT Magnetic</div>
+          <div class="mc-desc">Wood is a natural material with no metal — magnets can't attract it!</div>
+        </div>
+      </div>
+
+      <div class="material-card" onclick="flipCard(this)" data-magnetic="yes">
+        <div class="mc-front">
+          <div class="mc-emoji">🔩</div>
+          <div class="mc-name">Steel Bolt</div>
+          <div class="mc-hint pulse">👆 Tap to test!</div>
+        </div>
+        <div class="mc-back">
+          <div class="mc-emoji">🧲</div>
+          <div class="mc-result mag">MAGNETIC!</div>
+          <div class="mc-desc">Steel bolts contain iron and are strongly attracted to magnets!</div>
+        </div>
+      </div>
+
+      <div class="material-card" onclick="flipCard(this)" data-magnetic="no">
+        <div class="mc-front">
+          <div class="mc-emoji">🍶</div>
+          <div class="mc-name">Glass Jar</div>
+          <div class="mc-hint pulse">👆 Tap to test!</div>
+        </div>
+        <div class="mc-back non-mag">
+          <div class="mc-emoji">❌</div>
+          <div class="mc-result non">NOT Magnetic</div>
+          <div class="mc-desc">Glass is made from sand — no magnetic metals inside!</div>
+        </div>
+      </div>
+
+      <div class="material-card" onclick="flipCard(this)" data-magnetic="yes">
+        <div class="mc-front">
+          <div class="mc-emoji">🔧</div>
+          <div class="mc-name">Iron Wrench</div>
+          <div class="mc-hint pulse">👆 Tap to test!</div>
+        </div>
+        <div class="mc-back">
+          <div class="mc-emoji">🧲</div>
+          <div class="mc-result mag">MAGNETIC!</div>
+          <div class="mc-desc">Iron wrenches are magnetic — that's why magnets can pick them up!</div>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="reset-btn" onclick="resetSlide('slide-5')">↺ Reset Slide</button>
+  </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 6: QUIZ ══════════════ -->
+  <div class="slide" id="slide-6">
+  <div class="slide-content-animate">
+
+    <div class="slide-header">
+      <div class="slide-num" style="background:rgba(255,112,67,0.15);color:var(--orange)">6</div>
+      <div>
+        <div class="slide-title" style="color:var(--orange)">🏆 Practice Zone!</div>
+        <div class="slide-sub">Tap each question box to reveal the answer</div>
+      </div>
+    </div>
+
+    <div class="quiz-grid">
+
+      <div class="quiz-card" onclick="answerQuiz(this)">
+        <div class="qc-num">Q1 • Forces</div>
+        <div class="qc-q">What is the standard unit used to measure force?</div>
+        <div class="qc-tap pulse">👆 Tap for answer</div>
+        <div class="qc-answer">⚖️ The <strong>Newton (N)</strong> — named after scientist Sir Isaac Newton!</div>
+      </div>
+
+      <div class="quiz-card" onclick="answerQuiz(this)">
+        <div class="qc-num">Q2 • Gravity</div>
+        <div class="qc-q">In a vacuum, which falls faster: a heavy rock or a light leaf?</div>
+        <div class="qc-tap pulse">👆 Tap for answer</div>
+        <div class="qc-answer">🌍 <strong>Neither!</strong> They fall at exactly the same speed. Gravity pulls all objects equally!</div>
+      </div>
+
+      <div class="quiz-card" onclick="answerQuiz(this)">
+        <div class="qc-num">Q3 • Friction</div>
+        <div class="qc-q">What happens to friction when two rough surfaces rub together?</div>
+        <div class="qc-tap pulse">👆 Tap for answer</div>
+        <div class="qc-answer">🔥 Friction <strong>increases</strong>! Rough surfaces have more tiny bumps that grip each other, creating more resistance!</div>
+      </div>
+
+      <div class="quiz-card" onclick="answerQuiz(this)">
+        <div class="qc-num">Q4 • Magnets</div>
+        <div class="qc-q">What happens when you put two North poles of magnets together?</div>
+        <div class="qc-tap pulse">👆 Tap for answer</div>
+        <div class="qc-answer">❌ They <strong>REPEL</strong> each other! Same poles always push away. Only opposite poles (N+S) attract!</div>
+      </div>
+
+      <div class="quiz-card" onclick="answerQuiz(this)">
+        <div class="qc-num">Q5 • Materials</div>
+        <div class="qc-q">Name TWO materials that are magnetic and TWO that are NOT.</div>
+        <div class="qc-tap pulse">👆 Tap for answer</div>
+        <div class="qc-answer">🧲 <strong>Magnetic:</strong> Iron, Steel, Nickel, Cobalt<br/>❌ <strong>Not magnetic:</strong> Plastic, Wood, Glass, Copper, Aluminium</div>
+      </div>
+
+      <div class="quiz-card" onclick="answerQuiz(this)">
+        <div class="qc-num">Q6 • Friction</div>
+        <div class="qc-q">What tool do we use to measure the strength of a force?</div>
+        <div class="qc-tap pulse">👆 Tap for answer</div>
+        <div class="qc-answer">📏 A <strong>Forcemeter</strong> (also called a Newton Meter)! It stretches a spring inside to measure force in Newtons (N).</div>
+      </div>
+
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;font-size:clamp(12px,1.6vw,15px);font-weight:700;line-height:1.5">
+      <span style="color:var(--yellow);font-family:var(--font-h);font-size:18px">🌟 Well Done!</span><br/>
+      <span style="color:var(--muted)">You've completed Unit 5: Forces and Magnets! Remember: forces can push, pull, speed up, slow down, and change shape. Gravity pulls down, friction slows things, and magnets attract iron!</span>
+    </div>
+
+    <button class="reset-btn" onclick="resetSlide('slide-6')">↺ Reset Slide</button>
+  </div>
+  </div>
+
+</div><!-- /slides-track -->
+</div><!-- /slides-wrapper -->
+
+<!-- ── BOTTOM NAV ── -->
+<div id="nav-bar">
+  <div id="nav-prev" class="nav-arrows"><button class="nav-btn" onclick="changeSlide(-1)">◀ Prev</button></div>
+  <div class="nav-dot active" onclick="goToSlide(0)"></div>
+  <div class="nav-dot" onclick="goToSlide(1)"></div>
+  <div class="nav-dot" onclick="goToSlide(2)"></div>
+  <div class="nav-dot" onclick="goToSlide(3)"></div>
+  <div class="nav-dot" onclick="goToSlide(4)"></div>
+  <div class="nav-dot" onclick="goToSlide(5)"></div>
+  <div id="nav-next" class="nav-arrows"><button class="nav-btn" onclick="changeSlide(1)">Next ▶</button></div>
+</div>
+
+<script>
+/* ─────────────────── STATE ─────────────────── */
+let currentSlide = 0;
+const totalSlides = 6;
+const track = document.getElementById('slides-track');
+const dots  = document.querySelectorAll('.nav-dot');
+
+/* ─────────────────── SLIDE NAVIGATION ─────────────────── */
+function goToSlide(n) {
+  currentSlide = Math.max(0, Math.min(totalSlides - 1, n));
+  track.style.transform = `translateX(-${currentSlide * 100}%)`;
+  dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+  // Re-trigger animations
+  const slide = document.querySelectorAll('.slide')[currentSlide];
+  const inner = slide.querySelector('.slide-content-animate');
+  if (inner) {
+    inner.classList.remove('slide-content-animate');
+    void inner.offsetWidth;
+    inner.classList.add('slide-content-animate');
+  }
+  // Animate friction bars on slide 3
+  if (currentSlide === 2) setTimeout(animateFriction, 400);
+}
+function changeSlide(dir) { goToSlide(currentSlide + dir); }
+
+/* ─────────────────── SWIPE GESTURE ─────────────────── */
+let touchStartX = 0, touchStartY = 0;
+let isDragging = false;
+
+document.getElementById('slides-wrapper').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  isDragging = false;
+}, { passive: true });
+
+document.getElementById('slides-wrapper').addEventListener('touchmove', e => {
+  const dx = e.touches[0].clientX - touchStartX;
+  const dy = e.touches[0].clientY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) isDragging = true;
+}, { passive: true });
+
+document.getElementById('slides-wrapper').addEventListener('touchend', e => {
+  if (!isDragging) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) changeSlide(dx < 0 ? 1 : -1);
+  isDragging = false;
+});
+
+/* ─────────────────── RIPPLE ─────────────────── */
+function addRipple(el, e) {
+  const r = document.createElement('span');
+  r.classList.add('ripple');
+  const rect = el.getBoundingClientRect();
+  const x = (e.clientX || e.touches?.[0]?.clientX || rect.left + rect.width/2) - rect.left;
+  const y = (e.clientY || e.touches?.[0]?.clientY || rect.top  + rect.height/2) - rect.top;
+  const size = Math.max(rect.width, rect.height);
+  r.style.cssText = `width:${size}px;height:${size}px;left:${x-size/2}px;top:${y-size/2}px`;
+  el.appendChild(r);
+  r.addEventListener('animationend', () => r.remove());
+}
+
+/* ─────────────────── REVEAL (generic) ─────────────────── */
+function reveal(el, color, e) {
+  if (el.classList.contains('revealed') ||
+      el.classList.contains('revealed-orange') ||
+      el.classList.contains('revealed-purple') ||
+      el.classList.contains('revealed-cyan') ||
+      el.classList.contains('revealed-yellow') ||
+      el.classList.contains('revealed-green')) return;
+  addRipple(el, e || event || {});
+  const cls = color ? `revealed-${color}` : 'revealed';
+  el.classList.add(cls === 'revealed-green' ? 'revealed' : cls);
+  if (color === 'green') el.classList.add('revealed');
+}
+
+/* ─────────────────── DROP TEST ─────────────────── */
+let dropDone = false;
+function doDropTest() {
+  if (dropDone) return;
+  dropDone = true;
+  document.getElementById('dropTest').classList.add('revealed');
+  ['bowlingBall','feather'].forEach((id, i) => {
+    setTimeout(() => {
+      document.getElementById(id).classList.add('falling');
+    }, i * 0); // simultaneous
+  });
+  document.getElementById('dtAnswer').style.display = 'block';
+  addRipple(document.getElementById('dropTest'), {});
+}
+
+/* ─────────────────── WATER SLIDE ─────────────────── */
+function revealWaterSlide() {
+  const el = document.getElementById('waterSlide');
+  if (el.classList.contains('revealed')) return;
+  el.classList.add('revealed');
+  addRipple(el, {});
+}
+
+/* ─────────────────── FRICTION BARS ─────────────────── */
+let frictionAnimated = false;
+function animateFriction() {
+  if (frictionAnimated) return;
+  frictionAnimated = true;
+  document.querySelectorAll('.fs-bar-fill').forEach(bar => {
+    const target = bar.getAttribute('data-width');
+    bar.style.width = target;
+  });
+}
+
+/* ─────────────────── MAGNETS ─────────────────── */
+function magnetTap(el, type) {
+  if (el.classList.contains('attract') || el.classList.contains('repel')) return;
+  el.classList.add(type);
+  addRipple(el, {});
+}
+
+/* ─────────────────── MATERIAL FLIP ─────────────────── */
+function flipCard(el) {
+  if (el.classList.contains('flipped')) return;
+  const isMag = el.getAttribute('data-magnetic') === 'yes';
+  el.classList.add('flipped');
+  if (!isMag) el.classList.add('non-mag');
+  addRipple(el, {});
+}
+
+/* ─────────────────── QUIZ ─────────────────── */
+function answerQuiz(el) {
+  if (el.classList.contains('answered')) return;
+  el.classList.add('answered');
+  addRipple(el, {});
+}
+
+/* ─────────────────── RESET SLIDE ─────────────────── */
+function resetSlide(slideId) {
+  const slide = document.getElementById(slideId);
+  // tap-cards
+  slide.querySelectorAll('.tap-card').forEach(el => {
+    el.className = 'tap-card';
+    el.style.borderColor = ''; el.style.background = '';
+    el.onclick = el.onclick; // keep handler
+  });
+  // quiz cards
+  slide.querySelectorAll('.quiz-card').forEach(el => el.classList.remove('answered'));
+  // magnets
+  slide.querySelectorAll('.magnet-pair').forEach(el => el.className = 'magnet-pair');
+  // material cards
+  slide.querySelectorAll('.material-card').forEach(el => {
+    el.classList.remove('flipped','non-mag');
+  });
+  // drop test
+  if (slideId === 'slide-2') {
+    dropDone = false;
+    document.getElementById('dropTest')?.classList.remove('revealed');
+    document.getElementById('dtAnswer').style.display = '';
+    ['bowlingBall','feather'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.classList.remove('falling');
+    });
+  }
+  // water slide
+  if (slideId === 'slide-3') {
+    document.getElementById('waterSlide')?.classList.remove('revealed');
+    frictionAnimated = false;
+    document.querySelectorAll('.fs-bar-fill').forEach(b => b.style.width = '0');
+  }
+}
+
+/* ─────────────────── TIMER ─────────────────── */
+let timerSeconds = 300;
+let timerInterval = null;
+let timerRunning = false;
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  document.getElementById('timer-display').textContent =
+    `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timerSeconds = 300; // reset
+    updateTimerDisplay();
+  } else {
+    timerRunning = true;
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      updateTimerDisplay();
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timer-display').textContent = '00:00';
+        document.getElementById('timer').style.borderColor = 'var(--red)';
+        document.getElementById('timer').style.color = 'var(--red)';
+      }
+      if (timerSeconds <= 30) {
+        document.getElementById('timer').style.borderColor = 'rgba(239,68,68,0.5)';
+        document.getElementById('timer').style.color = 'var(--red)';
+      }
+    }, 1000);
+  }
+}
+
+/* ─────────────────── INIT ─────────────────── */
+// re-wire onclick for tap-cards that use reveal inline
+document.querySelectorAll('.tap-card').forEach(card => {
+  if (!card.getAttribute('data-color') && !card.getAttribute('onclick')) {
+    // already handled by attribute
+  }
+});
+
+// Init friction bars at 0
+document.querySelectorAll('.fs-bar-fill').forEach(b => b.style.width = '0');
+
+// Slide 3 friction bar tap via parent
+document.querySelector('.friction-scale')?.addEventListener('click', animateFriction);
+
+// Keyboard nav for desktop testing
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
+});
+
+console.log('🔬 Cambridge Science Smartboard ready!');
+</script>
+</body>
+</html>
